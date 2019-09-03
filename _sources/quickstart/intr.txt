@@ -1,0 +1,17 @@
+Introduction
+=================================
+
+BMLIB is the basic application interface to manage resources and computation on SC3 and other BM1682 SOC products. BMLIB is the basic function block 
+between other function blocks such as BMCV and BMRUNTIME, it encapsulates the interface to kernel driver and provide application interface to customer.
+
+BMLIB has functionality of:
+
+    1. common management structures, macros, and descriptions.
+	
+    2. function to manage memory on device.
+	
+    3. function to transfer data between host and device memory.
+
+    4. debug and other functions to easy use.
+
+

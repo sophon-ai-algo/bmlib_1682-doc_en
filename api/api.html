@@ -1,0 +1,601 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>BMLIB Application Interface &mdash; SophonInference  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SophonInference  documentation" href="../index.html"/>
+        <link rel="prev" title="Introduction" href="../quickstart/intr.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SophonInference
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/version.html">Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/intr.html">Introduction</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">BMLIB Application Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#common-definitions">Common Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-dev-getcount">bm_dev_getcount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-dev-request">bm_dev_request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-malloc-neuron-device">bm_malloc_neuron_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-malloc-device-dword">bm_malloc_device_dword</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-malloc-device-byte">bm_malloc_device_byte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-free-device">bm_free_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-memcpy-s2d">bm_memcpy_s2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bm-memcpy-d2s">bm_memcpy_d2s</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bmlib-log-set-level">bmlib_log_set_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bmlib-log-set-callback">bmlib_log_set_callback</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">SophonInference</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>BMLIB Application Interface</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/api.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bmlib-application-interface">
+<h1>BMLIB Application Interface<a class="headerlink" href="#bmlib-application-interface" title="Permalink to this headline">¶</a></h1>
+<p>BMLIB library provides application interface to access on board memory and control the computation on BM1682.</p>
+<div class="section" id="common-definitions">
+<h2>Common Definitions<a class="headerlink" href="#common-definitions" title="Permalink to this headline">¶</a></h2>
+<p>There are common macros and structures and other definitions in BMLIB, which are used in caller function blocks and applications too.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">bm_context</span> <span class="o">*</span>  <span class="n">bm_handle_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>bm_handle_t is the fundamental structure in BMLIB, it is the handle to access a SC3 device.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+    <span class="n">BM_SUCCESS</span>                 <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">BM_ERR_DEVNOTREADY</span>         <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>   <span class="cm">/* Device not ready yet */</span>
+    <span class="n">BM_ERR_FAILURE</span>             <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>   <span class="cm">/* General failure */</span>
+    <span class="n">BM_ERR_TIMEOUT</span>             <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>   <span class="cm">/* Timeout */</span>
+    <span class="n">BM_ERR_PARAM</span>               <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>   <span class="cm">/* Parameters invalid */</span>
+    <span class="n">BM_ERR_NOMEM</span>               <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>   <span class="cm">/* Not enough memory */</span>
+    <span class="n">BM_ERR_DATA</span>                <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>   <span class="cm">/* Data error */</span>
+    <span class="n">BM_ERR_BUSY</span>                <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>   <span class="cm">/* Busy */</span>
+    <span class="n">BM_ERR_NOFEATURE</span>           <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>    <span class="cm">/* Not supported yet */</span>
+    <span class="n">BM_NOT_SUPPORTED</span>           <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="n">BM_ERR_VERSION</span>             <span class="o">=</span> <span class="mi">10</span>   <span class="cm">/* version mis-match between bmlib and driver */</span>
+<span class="p">}</span> <span class="n">bm_status_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>bm_status_t is to indicate result of a function interface.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">bm_mem_desc</span> <span class="p">{</span>
+    <span class="k">union</span> <span class="p">{</span>
+        <span class="k">struct</span> <span class="p">{</span>
+                <span class="kt">unsigned</span> <span class="kt">long</span>         <span class="n">device_addr</span><span class="p">;</span>
+                <span class="kt">unsigned</span> <span class="kt">int</span>         <span class="n">reserved</span><span class="p">;</span>
+                <span class="kt">int</span>         <span class="n">dmabuf_fd</span><span class="p">;</span>
+        <span class="p">}</span> <span class="n">device</span><span class="p">;</span>
+
+        <span class="k">struct</span> <span class="p">{</span>
+                <span class="kt">void</span> <span class="o">*</span>      <span class="n">system_addr</span><span class="p">;</span>
+                <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">reserved0</span><span class="p">;</span>
+                <span class="kt">int</span>         <span class="n">reserved1</span><span class="p">;</span>
+        <span class="p">}</span> <span class="n">system</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+
+    <span class="n">bm_mem_flags_t</span>         <span class="n">flags</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>                    <span class="n">size</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">bm_mem_desc_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>bm_mem_desc_t is the memory descriptor structure to describe a block of memory, either on host or sc3 device.</p>
+</div></blockquote>
+</div>
+<div class="section" id="bm-dev-getcount">
+<h2>bm_dev_getcount<a class="headerlink" href="#bm-dev-getcount" title="Permalink to this headline">¶</a></h2>
+<p>This function is to get SC3 board number on the computer.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_dev_getcount</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span> <span class="n">count</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>count</td>
+<td>pointer to int value to hold the result number of boards.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-dev-request">
+<h2>bm_dev_request<a class="headerlink" href="#bm-dev-request" title="Permalink to this headline">¶</a></h2>
+<p>This function is to request a context in specific board.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_dev_request</span><span class="p">(</span><span class="n">bm_handle_t</span> <span class="o">*</span><span class="n">handle</span><span class="p">,</span> <span class="kt">int</span> <span class="n">devid</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>pointer to hold returned bm_handle_t structure pointer.</td>
+</tr>
+<tr class="row-odd"><td>devid</td>
+<td>index of board to request device context on.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-malloc-neuron-device">
+<h2>bm_malloc_neuron_device<a class="headerlink" href="#bm-malloc-neuron-device" title="Permalink to this headline">¶</a></h2>
+<p>This function is to allocate a block of device memory in unit of neuron.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_malloc_neuron_device</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span> <span class="o">*</span><span class="n">pmem</span><span class="p">,</span>
+    <span class="kt">int</span>              <span class="n">n</span><span class="p">,</span>
+    <span class="kt">int</span>              <span class="n">c</span><span class="p">,</span>
+    <span class="kt">int</span>              <span class="n">h</span><span class="p">,</span>
+    <span class="kt">int</span>              <span class="n">w</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>pmem</td>
+<td>memory descriptor pointer to hold result.</td>
+</tr>
+<tr class="row-even"><td>n</td>
+<td>neuron description n</td>
+</tr>
+<tr class="row-odd"><td>c</td>
+<td>neuron description c</td>
+</tr>
+<tr class="row-even"><td>h</td>
+<td>neuron description h</td>
+</tr>
+<tr class="row-odd"><td>w</td>
+<td>neuron description w</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-malloc-device-dword">
+<h2>bm_malloc_device_dword<a class="headerlink" href="#bm-malloc-device-dword" title="Permalink to this headline">¶</a></h2>
+<p>This function is to allocate a device memory block in unit of dword.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_malloc_device_dword</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span> <span class="o">*</span><span class="n">pmem</span><span class="p">,</span>
+    <span class="kt">int</span>              <span class="n">count</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>pmem</td>
+<td>memory descriptor pointer to hold result.</td>
+</tr>
+<tr class="row-even"><td>ocunt</td>
+<td>number of dwords to allocate.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-malloc-device-byte">
+<h2>bm_malloc_device_byte<a class="headerlink" href="#bm-malloc-device-byte" title="Permalink to this headline">¶</a></h2>
+<p>This function is to resize the image, with crop and convert function to the image.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_malloc_device_byte</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span> <span class="o">*</span><span class="n">pmem</span><span class="p">,</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>     <span class="n">size</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>pmem</td>
+<td>memory descriptor pointer to hold result.</td>
+</tr>
+<tr class="row-even"><td>ocunt</td>
+<td>size of device memory to allocate.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-free-device">
+<h2>bm_free_device<a class="headerlink" href="#bm-free-device" title="Permalink to this headline">¶</a></h2>
+<p>This function is free allocated device memory block.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">bm_free_device</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span>  <span class="n">mem</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>mem</td>
+<td>memory block descriptor structure returned in allocate that hold the information of memory block.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-memcpy-s2d">
+<h2>bm_memcpy_s2d<a class="headerlink" href="#bm-memcpy-s2d" title="Permalink to this headline">¶</a></h2>
+<p>This function is to copy data from system memory to device memory. It is fulfilled with CDMA of PCIE, and the size copied is saved in memory block
+description structure of the destination device memory.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_memcpy_s2d</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span>  <span class="n">dst</span><span class="p">,</span>
+    <span class="kt">void</span>            <span class="o">*</span><span class="n">src</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>dst</td>
+<td>memory block descriptor to describe memory block to be copied to.</td>
+</tr>
+<tr class="row-even"><td>src</td>
+<td>address of host memory to copy from.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bm-memcpy-d2s">
+<h2>bm_memcpy_d2s<a class="headerlink" href="#bm-memcpy-d2s" title="Permalink to this headline">¶</a></h2>
+<p>This function is to copy data from device memory to system memory. It is fulfilled with CDMA of PCIE, and the size copied is saved in memory block
+description structure of the source device memory, in this function, sync is include in this function to ensure TPU operation that may modify
+the device memory is finished.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="n">bm_status_t</span> <span class="nf">bm_memcpy_d2s</span><span class="p">(</span>
+    <span class="n">bm_handle_t</span>      <span class="n">handle</span><span class="p">,</span>
+    <span class="kt">void</span>            <span class="o">*</span><span class="n">dst</span><span class="p">,</span>
+    <span class="n">bm_device_mem_t</span>  <span class="n">src</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>handle</td>
+<td>Context handle requested in device request.</td>
+</tr>
+<tr class="row-odd"><td>dst</td>
+<td>address of host memory to copy to.</td>
+</tr>
+<tr class="row-even"><td>src</td>
+<td>memory block descriptor to describe memory block to be copied from.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bmlib-log-set-level">
+<h2>bmlib_log_set_level<a class="headerlink" href="#bmlib-log-set-level" title="Permalink to this headline">¶</a></h2>
+<p>This function is to set debug level to control the amount of output debug information.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="cp">#define BMLIB_LOG_QUIET    -8</span>
+<span class="cp">#define BMLIB_LOG_PANIC     0</span>
+<span class="cp">#define BMLIB_LOG_FATAL     8</span>
+<span class="cp">#define BMLIB_LOG_ERROR    16</span>
+<span class="cp">#define BMLIB_LOG_WARNING  24</span>
+<span class="cp">#define BMLIB_LOG_INFO     32</span>
+<span class="cp">#define BMLIB_LOG_VERBOSE  40</span>
+<span class="cp">#define BMLIB_LOG_DEBUG    48</span>
+<span class="cp">#define BMLIB_LOG_TRACE    56</span>
+
+<span class="kt">void</span> <span class="nf">bmlib_log_set_level</span><span class="p">(</span><span class="kt">int</span> <span class="n">level</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Parameter Descriptions</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Parameter</strong></th>
+<th class="head"><strong>Memo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>level</td>
+<td>debug level of log message, macro as define above, only logs below this level be printed.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="bmlib-log-set-callback">
+<h2>bmlib_log_set_callback<a class="headerlink" href="#bmlib-log-set-callback" title="Permalink to this headline">¶</a></h2>
+<p>This is the callback function definition in C and interface function to set the log output function, with setting the log callback, log will be redirected
+to this function.</p>
+<blockquote>
+<div><div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">bmlib_log_set_callback</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">callback</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span> <span class="kt">va_list</span> <span class="n">args</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../quickstart/intr.html" class="btn btn-neutral" title="Introduction" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sophon.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

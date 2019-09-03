@@ -1,0 +1,279 @@
+BMLIB Application Interface
+=================================
+
+BMLIB library provides application interface to access on board memory and control the computation on BM1682. 
+
+Common Definitions
+-------------------------
+
+There are common macros and structures and other definitions in BMLIB, which are used in caller function blocks and applications too. 
+
+    .. code-block:: c 
+
+        typedef struct bm_context *  bm_handle_t;
+
+    bm_handle_t is the fundamental structure in BMLIB, it is the handle to access a SC3 device.
+
+
+    .. code-block:: c
+
+        typedef enum {
+            BM_SUCCESS                 = 0,
+            BM_ERR_DEVNOTREADY         = 1,   /* Device not ready yet */
+            BM_ERR_FAILURE             = 2,   /* General failure */
+            BM_ERR_TIMEOUT             = 3,   /* Timeout */
+            BM_ERR_PARAM               = 4,   /* Parameters invalid */
+            BM_ERR_NOMEM               = 5,   /* Not enough memory */
+            BM_ERR_DATA                = 6,   /* Data error */
+            BM_ERR_BUSY                = 7,   /* Busy */
+            BM_ERR_NOFEATURE           = 8,    /* Not supported yet */
+            BM_NOT_SUPPORTED           = 9,
+            BM_ERR_VERSION             = 10   /* version mis-match between bmlib and driver */
+        } bm_status_t;
+
+    bm_status_t is to indicate result of a function interface.
+
+    .. code-block:: c
+
+
+        typedef struct bm_mem_desc {
+            union {
+                struct {
+                        unsigned long         device_addr;
+                        unsigned int         reserved;
+                        int         dmabuf_fd;
+                } device;
+
+                struct {
+                        void *      system_addr;
+                        unsigned int reserved0;
+                        int         reserved1;
+                } system;
+            } u;
+
+            bm_mem_flags_t         flags;
+            unsigned int                    size;
+        } bm_mem_desc_t;
+
+
+    bm_mem_desc_t is the memory descriptor structure to describe a block of memory, either on host or sc3 device.
+
+bm_dev_getcount
+----------------
+
+This function is to get SC3 board number on the computer.
+
+    .. code-block:: c
+
+        bm_status_t bm_dev_getcount(int* count);
+
+Parameter Descriptions
+	
+    ===============    =====================
+     **Parameter**      **Memo**
+    ===============    =====================
+     count              pointer to int value to hold the result number of boards.
+    ===============    =====================
+
+
+bm_dev_request
+----------------
+
+This function is to request a context in specific board.
+
+    .. code-block:: c
+
+        bm_status_t bm_dev_request(bm_handle_t *handle, int devid);
+
+
+Parameter Descriptions
+
+    ===============    =====================
+     **Parameter**      **Memo**
+    ===============    =====================
+     handle             pointer to hold returned bm_handle_t structure pointer.
+     devid              index of board to request device context on.
+    ===============    =====================
+
+bm_malloc_neuron_device
+-------------------------
+
+This function is to allocate a block of device memory in unit of neuron.
+
+    .. code-block:: c
+
+        bm_status_t bm_malloc_neuron_device(
+            bm_handle_t      handle,
+            bm_device_mem_t *pmem,
+            int              n,
+            int              c,
+            int              h,
+            int              w);
+
+
+Parameter Descriptions
+
+    ================   ==================
+    **Parameter**      **Memo**
+    ================   ==================
+    handle             Context handle requested in device request.
+    pmem               memory descriptor pointer to hold result.
+    n                  neuron description n
+    c                  neuron description c
+    h                  neuron description h
+    w                  neuron description w
+    ================   ==================
+
+bm_malloc_device_dword
+--------------------------
+
+This function is to allocate a device memory block in unit of dword.
+
+    .. code-block:: c
+	
+        bm_status_t bm_malloc_device_dword(
+            bm_handle_t      handle,
+            bm_device_mem_t *pmem,
+            int              count);
+
+
+Parameter Descriptions
+
+    ==============    ====================================
+    **Parameter**      **Memo**
+    ==============    ====================================
+    handle             Context handle requested in device request.
+    pmem               memory descriptor pointer to hold result.
+    ocunt              number of dwords to allocate.
+    ==============    ====================================
+	
+
+bm_malloc_device_byte
+--------------------------
+
+This function is to resize the image, with crop and convert function to the image.
+
+    .. code-block:: c
+
+        bm_status_t bm_malloc_device_byte(
+            bm_handle_t      handle,
+            bm_device_mem_t *pmem,
+            unsigned int     size);
+
+
+Parameter Descriptions
+
+    ==============    ====================================
+    **Parameter**      **Memo**
+    ==============    ====================================
+    handle             Context handle requested in device request.
+    pmem               memory descriptor pointer to hold result.
+    ocunt              size of device memory to allocate.
+    ==============    ====================================
+
+bm_free_device
+--------------------------
+
+This function is free allocated device memory block.
+
+    .. code-block:: c
+
+        void bm_free_device(
+            bm_handle_t      handle,
+            bm_device_mem_t  mem);
+
+
+Parameter Descriptions
+
+    ===============    =====================
+     **Parameter**      **Memo**
+    ===============    =====================
+     handle             Context handle requested in device request.
+     mem                memory block descriptor structure returned in allocate that hold the information of memory block.
+    ===============    =====================
+
+	
+bm_memcpy_s2d
+--------------------------
+
+This function is to copy data from system memory to device memory. It is fulfilled with CDMA of PCIE, and the size copied is saved in memory block 
+description structure of the destination device memory.
+
+    .. code-block:: c
+
+        bm_status_t bm_memcpy_s2d(
+            bm_handle_t      handle,
+            bm_device_mem_t  dst,
+            void            *src);
+
+
+Parameter Descriptions
+	
+    ===============    =====================
+     **Parameter**      **Memo**
+    ===============    =====================
+     handle             Context handle requested in device request.
+     dst                memory block descriptor to describe memory block to be copied to.
+     src                address of host memory to copy from.
+    ===============    =====================
+
+bm_memcpy_d2s
+--------------------------
+
+This function is to copy data from device memory to system memory. It is fulfilled with CDMA of PCIE, and the size copied is saved in memory block 
+description structure of the source device memory, in this function, sync is include in this function to ensure TPU operation that may modify 
+the device memory is finished.
+
+    .. code-block:: c
+
+        bm_status_t bm_memcpy_d2s(
+            bm_handle_t      handle,
+            void            *dst,
+            bm_device_mem_t  src);
+
+Parameter Descriptions
+	
+    ===============    =====================
+    **Parameter**      **Memo**
+    ===============    =====================
+     handle             Context handle requested in device request.
+     dst                address of host memory to copy to.
+     src                memory block descriptor to describe memory block to be copied from.
+    ===============    =====================
+
+bmlib_log_set_level
+---------------------
+
+This function is to set debug level to control the amount of output debug information.
+
+    .. code-block:: c
+
+        #define BMLIB_LOG_QUIET    -8
+        #define BMLIB_LOG_PANIC     0
+        #define BMLIB_LOG_FATAL     8
+        #define BMLIB_LOG_ERROR    16
+        #define BMLIB_LOG_WARNING  24
+        #define BMLIB_LOG_INFO     32
+        #define BMLIB_LOG_VERBOSE  40
+        #define BMLIB_LOG_DEBUG    48
+        #define BMLIB_LOG_TRACE    56
+
+        void bmlib_log_set_level(int level);
+
+Parameter Descriptions
+	
+    ===============    =====================
+     **Parameter**      **Memo**
+    ===============    =====================
+     level              debug level of log message, macro as define above, only logs below this level be printed.
+    ===============    =====================
+
+bmlib_log_set_callback
+-----------------------
+
+This is the callback function definition in C and interface function to set the log output function, with setting the log callback, log will be redirected
+to this function.
+
+    .. code-block:: c
+
+        void bmlib_log_set_callback(void (*callback)(int, const char*, va_list args));

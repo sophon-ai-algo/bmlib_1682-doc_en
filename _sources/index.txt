@@ -1,0 +1,42 @@
+.. BM1682 BMLib documentation master file, created by Bitmain
+   Created on 2019.08.29
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+BMLIB User Manual
+============================
+
+**Tips**
+
+Before using **BMLIB**, make sure you have installed the Bitmain Sophon-SC3 TPU Board and the device driver.
+
+**CopyRight**
+
+CopyRight © 2019 Beijing Bitmain Technology Co., Ltd.
+No part of this document may be reproduced or transmitted in any form or by any means without prior written permission from Bitmain.
+For more information, please visit www.sophon.ai.
+
++------------+------------------+---------------+-----------------------------+
+| ___Date___ | _____Editor_____ | ___Version___ | __________Remarks__________ |
++============+==================+===============+=============================+
+| 2019.08.29 |      Yu HOU      |     1.1.4     |        First Version        |
++------------+------------------+---------------+-----------------------------+
+|            |                  |               |                             |
++------------+------------------+---------------+-----------------------------+
+
+BMLIB Quickstart
+---------------------------
+.. toctree::
+   :glob:
+
+   quickstart/version
+   quickstart/intr
+
+BMLIB Api
+------------------------
+.. toctree::
+   :glob:
+
+   api/api
+   
+
